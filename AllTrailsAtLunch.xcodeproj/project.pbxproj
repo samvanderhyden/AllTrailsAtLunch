@@ -17,6 +17,7 @@
 		A8EC039429676F4800B6DB89 /* PlaceModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039329676F4800B6DB89 /* PlaceModelTests.swift */; };
 		A8EC03972967714800B6DB89 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03962967714800B6DB89 /* Utils.swift */; };
 		A8EC0399296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC0398296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift */; };
+		A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039C2968C35800B6DB89 /* LocationService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		A8EC039329676F4800B6DB89 /* PlaceModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceModelTests.swift; sourceTree = "<group>"; };
 		A8EC03962967714800B6DB89 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		A8EC0398296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlaceSearchServiceTests.swift; sourceTree = "<group>"; };
+		A8EC039C2968C35800B6DB89 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				A8EC038F296769A600B6DB89 /* Models.swift */,
 				A8EC0391296769DF00B6DB89 /* PlaceSearchService.swift */,
 				A8EC03962967714800B6DB89 /* Utils.swift */,
+				A8EC039C2968C35800B6DB89 /* LocationService.swift */,
 				A89B381029664593003D240C /* Assets.xcassets */,
 				A89B381229664593003D240C /* LaunchScreen.storyboard */,
 				A89B381529664593003D240C /* Info.plist */,
@@ -207,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8EC0392296769DF00B6DB89 /* PlaceSearchService.swift in Sources */,
+				A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */,
 				A89B380C29664591003D240C /* ViewController.swift in Sources */,
 				A89B380829664591003D240C /* AppDelegate.swift in Sources */,
 				A89B380A29664591003D240C /* SceneDelegate.swift in Sources */,
