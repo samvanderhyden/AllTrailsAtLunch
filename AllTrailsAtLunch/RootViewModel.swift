@@ -36,10 +36,6 @@ final class RootViewModel {
     
     let mapViewModel = MapViewModel()
     let listViewModel = ListViewModel()
-    var title: String {
-        // TODO: Localize this
-        return "AllTrails At Lunch"
-    }
     
     private var cancellables = Set<AnyCancellable>()
     private var radius: CLLocationDistance = 1000
@@ -82,6 +78,17 @@ final class RootViewModel {
             locationService.fetchCurrentLocation()
         }
     }
+    
+    // MARK: - Actions
+    
+    func didTapViewMode() {
+        switch viewState {
+        case .map:
+            viewState = .list
+        case .list:
+            viewState = .map
+        }
+    }
         
     // MARK: -
     
@@ -98,4 +105,26 @@ final class RootViewModel {
         }
         .store(in: &cancellables)
     }
+}
+
+
+// MARK: - Strings
+
+extension RootViewModel {
+        
+    var title: String {
+        // TODO: Localize this
+        return "AllTrails At Lunch"
+    }
+    
+    var listButtonTitle: String {
+        // TODO: Localize this
+        return "List"
+    }
+    
+    var mapButtonTitle: String {
+        // TODO: Localize this
+        return "Map"
+    }
+    
 }

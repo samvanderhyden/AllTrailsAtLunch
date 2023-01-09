@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		A89B380829664591003D240C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89B380729664591003D240C /* AppDelegate.swift */; };
 		A89B380A29664591003D240C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89B380929664591003D240C /* SceneDelegate.swift */; };
-		A89B380C29664591003D240C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89B380B29664591003D240C /* ViewController.swift */; };
+		A89B380C29664591003D240C /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89B380B29664591003D240C /* RootViewController.swift */; };
 		A89B381129664593003D240C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A89B381029664593003D240C /* Assets.xcassets */; };
 		A89B381429664593003D240C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A89B381229664593003D240C /* LaunchScreen.storyboard */; };
 		A8EC0390296769A600B6DB89 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC038F296769A600B6DB89 /* Models.swift */; };
@@ -22,6 +22,8 @@
 		A8EC039F2968ECEF00B6DB89 /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */; };
 		A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */; };
 		A8EC03A3296C835400B6DB89 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A2296C835400B6DB89 /* RootViewModelTests.swift */; };
+		A8EC03A5296C8B3300B6DB89 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A4296C8B3300B6DB89 /* MapViewController.swift */; };
+		A8EC03A7296C8BC100B6DB89 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A6296C8BC100B6DB89 /* ListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +40,7 @@
 		A89B380429664591003D240C /* AllTrailsAtLunch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllTrailsAtLunch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A89B380729664591003D240C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A89B380929664591003D240C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		A89B380B29664591003D240C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A89B380B29664591003D240C /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		A89B381029664593003D240C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A89B381329664593003D240C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A89B381529664593003D240C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -53,6 +55,8 @@
 		A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
 		A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		A8EC03A2296C835400B6DB89 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
+		A8EC03A4296C8B3300B6DB89 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		A8EC03A6296C8BC100B6DB89 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +100,9 @@
 			children = (
 				A89B380729664591003D240C /* AppDelegate.swift */,
 				A89B380929664591003D240C /* SceneDelegate.swift */,
-				A89B380B29664591003D240C /* ViewController.swift */,
+				A8EC03A4296C8B3300B6DB89 /* MapViewController.swift */,
+				A89B380B29664591003D240C /* RootViewController.swift */,
+				A8EC03A6296C8BC100B6DB89 /* ListViewController.swift */,
 				A8EC038F296769A600B6DB89 /* Models.swift */,
 				A8EC0391296769DF00B6DB89 /* PlaceSearchService.swift */,
 				A8EC03962967714800B6DB89 /* Utils.swift */,
@@ -221,11 +227,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8EC03A5296C8B3300B6DB89 /* MapViewController.swift in Sources */,
 				A8EC0392296769DF00B6DB89 /* PlaceSearchService.swift in Sources */,
+				A8EC03A7296C8BC100B6DB89 /* ListViewController.swift in Sources */,
 				A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */,
 				A8EC039B2968BD3500B6DB89 /* RootViewModel.swift in Sources */,
 				A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */,
-				A89B380C29664591003D240C /* ViewController.swift in Sources */,
+				A89B380C29664591003D240C /* RootViewController.swift in Sources */,
 				A89B380829664591003D240C /* AppDelegate.swift in Sources */,
 				A8EC039F2968ECEF00B6DB89 /* ListViewModel.swift in Sources */,
 				A89B380A29664591003D240C /* SceneDelegate.swift in Sources */,
