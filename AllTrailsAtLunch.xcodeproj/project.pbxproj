@@ -17,7 +17,11 @@
 		A8EC039429676F4800B6DB89 /* PlaceModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039329676F4800B6DB89 /* PlaceModelTests.swift */; };
 		A8EC03972967714800B6DB89 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03962967714800B6DB89 /* Utils.swift */; };
 		A8EC0399296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC0398296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift */; };
+		A8EC039B2968BD3500B6DB89 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039A2968BD3500B6DB89 /* RootViewModel.swift */; };
 		A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039C2968C35800B6DB89 /* LocationService.swift */; };
+		A8EC039F2968ECEF00B6DB89 /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */; };
+		A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */; };
+		A8EC03A3296C835400B6DB89 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03A2296C835400B6DB89 /* RootViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +48,11 @@
 		A8EC039329676F4800B6DB89 /* PlaceModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceModelTests.swift; sourceTree = "<group>"; };
 		A8EC03962967714800B6DB89 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		A8EC0398296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlaceSearchServiceTests.swift; sourceTree = "<group>"; };
+		A8EC039A2968BD3500B6DB89 /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		A8EC039C2968C35800B6DB89 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
+		A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		A8EC03A2296C835400B6DB89 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +100,9 @@
 				A8EC038F296769A600B6DB89 /* Models.swift */,
 				A8EC0391296769DF00B6DB89 /* PlaceSearchService.swift */,
 				A8EC03962967714800B6DB89 /* Utils.swift */,
+				A8EC039A2968BD3500B6DB89 /* RootViewModel.swift */,
+				A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */,
+				A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */,
 				A8EC039C2968C35800B6DB89 /* LocationService.swift */,
 				A89B381029664593003D240C /* Assets.xcassets */,
 				A89B381229664593003D240C /* LaunchScreen.storyboard */,
@@ -105,6 +116,7 @@
 			children = (
 				A8EC039329676F4800B6DB89 /* PlaceModelTests.swift */,
 				A8EC0398296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift */,
+				A8EC03A2296C835400B6DB89 /* RootViewModelTests.swift */,
 			);
 			path = AllTrailsAtLunchTests;
 			sourceTree = "<group>";
@@ -210,9 +222,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8EC0392296769DF00B6DB89 /* PlaceSearchService.swift in Sources */,
+				A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */,
+				A8EC039B2968BD3500B6DB89 /* RootViewModel.swift in Sources */,
 				A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */,
 				A89B380C29664591003D240C /* ViewController.swift in Sources */,
 				A89B380829664591003D240C /* AppDelegate.swift in Sources */,
+				A8EC039F2968ECEF00B6DB89 /* ListViewModel.swift in Sources */,
 				A89B380A29664591003D240C /* SceneDelegate.swift in Sources */,
 				A8EC0390296769A600B6DB89 /* Models.swift in Sources */,
 				A8EC03972967714800B6DB89 /* Utils.swift in Sources */,
@@ -225,6 +240,7 @@
 			files = (
 				A8EC0399296885A100B6DB89 /* GooglePlaceSearchServiceTests.swift in Sources */,
 				A8EC039429676F4800B6DB89 /* PlaceModelTests.swift in Sources */,
+				A8EC03A3296C835400B6DB89 /* RootViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
