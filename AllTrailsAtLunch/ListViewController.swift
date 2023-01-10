@@ -124,10 +124,12 @@ struct PlaceItemContentConfiguration: UIContentConfiguration, Equatable {
     
     let item: PlaceListItem
     var contentInsets: UIEdgeInsets
+    var showShadow: Bool
     
-    init(item: PlaceListItem, contentInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)) {
+    init(item: PlaceListItem, contentInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16), showShadow: Bool = true) {
         self.item = item
         self.contentInsets = contentInsets
+        self.showShadow = showShadow
     }
     
     func makeContentView() -> UIView & UIContentView {
@@ -193,6 +195,8 @@ final class PlaceItemContentView: UIView, UIContentView {
         
         descriptionLabel.font = UIFont.preferredFont(forTextStyle: .body)
         descriptionLabel.text = configuration.item.description
+
+        shadowView.isHidden = !configuration.showShadow
         
         setNeedsLayout()
     }
@@ -249,7 +253,7 @@ final class PlaceItemContentView: UIView, UIContentView {
         height += contentView.directionalLayoutMargins.top + contentView.directionalLayoutMargins.bottom
         return CGSize(width: size.width, height: height)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -283,7 +287,6 @@ final class PlaceItemContentView: UIView, UIContentView {
             }
         }
     }
-    
 }
 
 // MARK: - Empty / loading View

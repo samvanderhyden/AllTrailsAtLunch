@@ -32,7 +32,7 @@ final class RootViewModel {
     
     @Published private(set) var results: [Place] = [] {
         didSet {
-            mapViewModel.results = results
+            mapViewModel.updateResults(results)
             listViewModel.updateResults(results)
         }
     }
@@ -43,7 +43,7 @@ final class RootViewModel {
     }
     @Published var viewState: ViewState = .list
     
-    let mapViewModel = MapViewModel()
+    private(set) lazy var mapViewModel = MapViewModel(searchService: searchService)
     private(set) lazy var listViewModel = ListViewModel(searchService: searchService)
     
     private var cancellables = Set<AnyCancellable>()
