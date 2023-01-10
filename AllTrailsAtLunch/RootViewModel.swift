@@ -17,6 +17,11 @@ final class RootViewModel {
         case map
     }
     
+    enum DataLoadingError: Error {
+        case locationNotAuthorized
+        case other
+    }
+    
     private let searchService: PlaceSearchService
     private let locationService: LocationService
     
@@ -28,10 +33,14 @@ final class RootViewModel {
     @Published private(set) var results: [Place] = [] {
         didSet {
             mapViewModel.results = results
-            listViewModel.results = results
+            listViewModel.updateResults(results)
         }
     }
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = false {
+        didSet {
+            listViewModel.updateIsLoading(isLoading)
+        }
+    }
     @Published var viewState: ViewState = .list
     
     let mapViewModel = MapViewModel()
@@ -40,41 +49,37 @@ final class RootViewModel {
     private var cancellables = Set<AnyCancellable>()
     private var radius: CLLocationDistance = 1000
     
-    @Published private var currentLocation: CLLocationCoordinate2D?
-    
+    /// Publishes an error when loading data or accessing location
+    let errorSubject = PassthroughSubject<DataLoadingError, Never>()
+        
     // MARK: - Lifecycle
     
     func didLoad() {
         locationService.locationStatus.sink { [weak self] status in
+            guard let self = self else { return }
             switch status {
             case .authorizing, .loading, .initial:
-                self?.isLoading = true
+                self.isLoading = true
             case .authorized(let location):
-                self?.currentLocation = location
+                self.searchForNearbyRestaurants(location)
             case .notAuthorized:
-                // TODO: Error handling
+                // TODO: If I had more time I'd add a screen calling out to authorize location access in settings.
                 Logger.appDefault.log(level: .info, "Error getting location: User has not authorized location services")
+                self.results = []
+                self.isLoading = false
+                self.errorSubject.send(.locationNotAuthorized)
             case .failed(let error):
                 Logger.appDefault.log(level: .error, "Error getting location: \(error)")
-                // TODO: Error handling
-            }
-        }
-        .store(in: &cancellables)
-        
-        $currentLocation.compactMap { $0 }.sink { [weak self] location in
-            guard let self = self else {
-                return
-            }
-            
-            if self.results.isEmpty {
-                self.searchForNearbyRestaurants(location)
+                self.results = []
+                self.isLoading = false
+                self.errorSubject.send(.other)
             }
         }
         .store(in: &cancellables)
     }
     
     func willAppear() {
-        if currentLocation == nil {
+        if results.isEmpty {
             locationService.fetchCurrentLocation()
         }
     }
@@ -105,26 +110,4 @@ final class RootViewModel {
         }
         .store(in: &cancellables)
     }
-}
-
-
-// MARK: - Strings
-
-extension RootViewModel {
-        
-    var title: String {
-        // TODO: Localize this
-        return "AllTrails At Lunch"
-    }
-    
-    var listButtonTitle: String {
-        // TODO: Localize this
-        return "List"
-    }
-    
-    var mapButtonTitle: String {
-        // TODO: Localize this
-        return "Map"
-    }
-    
 }

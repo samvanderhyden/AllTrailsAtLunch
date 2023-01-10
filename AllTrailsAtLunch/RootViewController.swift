@@ -45,7 +45,7 @@ final class RootViewController: UIViewController {
         button.layer.masksToBounds = true
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 8)
         ])
         return button
     }()
@@ -64,8 +64,9 @@ final class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "backgroundColor")
         viewModel.didLoad()
-        self.navigationItem.title = viewModel.title
+        self.navigationItem.title = "AllTrails at Lunch"
         
         viewModel.$viewState.sink { [weak self] state in
             guard let self = self else { return }
@@ -83,6 +84,11 @@ final class RootViewController: UIViewController {
             self.configureViewModeButtonForState(state)
         }
         .store(in: &cancellables)
+        
+        viewModel.errorSubject.sink { [weak self] error in
+            self?.showErrorDialog(error: error)
+        }
+        .store(in: &cancellables)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -93,6 +99,7 @@ final class RootViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         viewModeButton.layer.cornerRadius = viewModeButton.frame.height / 2
+        updateSafeAreaInsets()
     }
     
     // MARK: -
@@ -110,10 +117,33 @@ final class RootViewController: UIViewController {
         switch viewState {
         case .list:
             viewModeButton.setImage(UIImage(systemName: "map"), for: .normal)
-            viewModeButton.setTitle(viewModel.mapButtonTitle, for: .normal)
+            // TODO: Localize
+            viewModeButton.setTitle("Map", for: .normal)
         case .map:
             viewModeButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-            viewModeButton.setTitle(viewModel.listButtonTitle, for: .normal)
+            // TODO: Localize
+            viewModeButton.setTitle("List", for: .normal)
         }
+    }
+    
+    private func updateSafeAreaInsets() {
+        var additionalInsets = additionalSafeAreaInsets
+        additionalInsets.bottom = viewModeButton.frame.height + 8
+        self.additionalSafeAreaInsets = additionalInsets
+    }
+    
+    private func showErrorDialog(error: RootViewModel.DataLoadingError) {
+        let errorText: String
+        // TODO: Localize this text
+        switch error {
+        case .locationNotAuthorized:
+            errorText = "Location access not authorized. Please allow access to location services in settings."
+        case .other:
+            errorText = "An error occurred. Please try again."
+        }
+        
+        let alert = UIAlertController(title: "Error", message: errorText, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
