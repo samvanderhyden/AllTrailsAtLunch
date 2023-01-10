@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 import UIKit
+import os.log
 
 private enum Section {
     case places
@@ -110,7 +111,10 @@ extension ListViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // TODO: Load image thumbnail
+        guard let contentView = cell.contentView as? PlaceItemContentView else { return }
+        if let imagePublisher = viewModel.loadPhotoForItem(indexPath, width: contentView.bounds.height * UIScreen.main.scale) {
+            contentView.loadImageThumbnail(publisher: imagePublisher)
+        }
     }
 }
 
@@ -160,7 +164,7 @@ final class PlaceItemContentView: UIView, UIContentView {
         
     private var currentConfiguration: PlaceItemContentConfiguration {
         didSet {
-            updateConfiguration(currentConfiguration)
+            updateConfiguration(currentConfiguration, oldConfiguration: oldValue)
         }
     }
     
@@ -171,9 +175,14 @@ final class PlaceItemContentView: UIView, UIContentView {
     private let descriptionLabel = UILabel()
     private let imageView = UIImageView()
     private let starImageView = UIImageView()
+    private var imageCancellable: AnyCancellable?
     
-    private func updateConfiguration(_ configuration: PlaceItemContentConfiguration) {
-        imageView.image = UIImage(systemName: "fork.knife")
+    private func updateConfiguration(_ configuration: PlaceItemContentConfiguration, oldConfiguration: PlaceItemContentConfiguration?) {
+        if configuration.item.id != oldConfiguration?.item.id {
+            imageView.image = UIImage(systemName: "fork.knife")
+            imageView.contentMode = .scaleAspectFit
+        }
+
         if let nameFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title3).withSymbolicTraits(.traitBold) {
             nameLabel.font = UIFont(descriptor: nameFontDescriptor, size: 0)
         }
@@ -205,7 +214,8 @@ final class PlaceItemContentView: UIView, UIContentView {
         
         contentView.addSubview(imageView)
         imageView.tintColor = UIColor(named: "backgroundColor")
-        imageView.contentMode = .scaleAspectFit
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 8
         
         contentView.addSubview(starImageView)
         starImageView.tintColor = UIColor(named: "ratingStarColor")
@@ -219,7 +229,7 @@ final class PlaceItemContentView: UIView, UIContentView {
         shadowView.layer.shadowOffset = CGSize(width: 0, height: 2)
         shadowView.layer.shadowRadius = 2
         
-        updateConfiguration(currentConfiguration)
+        updateConfiguration(currentConfiguration, oldConfiguration: nil)
     }
     
     @available(*, unavailable)
@@ -261,6 +271,19 @@ final class PlaceItemContentView: UIView, UIContentView {
         descriptionLabel.sizeToFit()
         descriptionLabel.frame = CGRect(x: starImageView.frame.minX, y: starImageView.frame.maxY + 2, width: remainingWidth, height: descriptionLabel.frame.height)
     }
+    
+    func loadImageThumbnail(publisher: AnyPublisher<Result<UIImage, PlaceSearchError>, Never>) {
+        imageCancellable = publisher.receive(on: DispatchQueue.main).sink { [weak self] result in
+            switch result {
+            case .success(let image):
+                self?.imageView.contentMode = .scaleAspectFill
+                self?.imageView.image = image
+            case .failure(let error):
+                Logger.appDefault.error("Error fetching employee thumbnail: \(error)")
+            }
+        }
+    }
+    
 }
 
 // MARK: - Empty / loading View

@@ -35,6 +35,10 @@ class RootViewModelTests: XCTestCase {
             let response = PlaceSearchResponse(results: [place], attributions: [], nextPageToken: nil)
             return Just(.success(response)).eraseToAnyPublisher()
         }
+        
+        func fetchPhoto(maxWidth: CGFloat, reference: String) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never> {
+            return Just(.failure(PlaceSearchError.imageDecodeError)).eraseToAnyPublisher()
+        }
     }
     
     /// Verify results are populated when willAppear is called for the first time

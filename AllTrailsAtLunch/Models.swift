@@ -59,7 +59,7 @@ struct Place: Decodable, Hashable {
     }
     var priceLevel: Int?
     
-    init(placeId: String? = nil, name: String? = nil, rating: Float? = nil, photos: [Photo]? = nil, businessStatus: BusinessStatus? = nil, geometry: Geometry, currentOpeningHours: OpeningHours? = nil, userRatingsTotal: Int? = nil, openingHours: OpeningHours?, priceLevel: Int? = nil) {
+    init(placeId: String? = nil, name: String? = nil, rating: Float? = nil, photos: [Photo]? = nil, businessStatus: BusinessStatus? = nil, geometry: Geometry, currentOpeningHours: OpeningHours? = nil, userRatingsTotal: Int? = nil, openingHours: OpeningHours? = nil, priceLevel: Int? = nil) {
         self.placeId = placeId
         self.name = name
         self.rating = rating

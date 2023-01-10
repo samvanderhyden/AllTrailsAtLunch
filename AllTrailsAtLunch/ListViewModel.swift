@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 import os.log
+import UIKit
 
 final class ListViewModel {
     
@@ -36,6 +37,11 @@ final class ListViewModel {
     }
     
     @Published private(set) var viewState: ViewState = .loading
+    private let searchService: PlaceSearchService
+    
+    init(searchService: PlaceSearchService) {
+        self.searchService = searchService
+    }
     
     func updateResults(_ places: [Place]) {
         let placesItems = places.compactMap(PlaceListItem.init)
@@ -58,6 +64,13 @@ final class ListViewModel {
             return results[indexPath.item]
         }
     }
+    
+    func loadPhotoForItem(_ indexPath: IndexPath, width: CGFloat) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never>? {
+        guard let item = self.itemAtIndexPath(indexPath) else { return nil }
+        guard let photoReference = item.thumbnailPhotoReference else { return nil }
+        return searchService.fetchPhoto(maxWidth: width, reference: photoReference)
+    }
+    
 }
 
 struct PlaceListItem: Hashable {
@@ -82,6 +95,7 @@ struct PlaceListItem: Hashable {
     var name: String
     var description: String
     var ratingDescription: String
+    var thumbnailPhotoReference: String?
 
     init?(place: Place) {
         guard let id = place.placeId else {
@@ -107,5 +121,7 @@ struct PlaceListItem: Hashable {
         
         // TODO: This should be localized into different string depending "review" pluralization
         self.ratingDescription = String(format: "\(Self.userRatingFormatter.string(from: NSNumber(value: place.rating ?? 0)) ?? "0") • \(Self.numRatingsFormatter.string(from: NSNumber(value: place.userRatingsTotal ?? 0)) ?? "0") review\(place.userRatingsTotal != 1 ? "s" : "")", place.rating ?? 0)
+        
+        self.thumbnailPhotoReference = place.photos?.first?.photoReference
     }
 }

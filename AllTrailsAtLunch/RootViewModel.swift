@@ -44,7 +44,7 @@ final class RootViewModel {
     @Published var viewState: ViewState = .list
     
     let mapViewModel = MapViewModel()
-    let listViewModel = ListViewModel()
+    private(set) lazy var listViewModel = ListViewModel(searchService: searchService)
     
     private var cancellables = Set<AnyCancellable>()
     private var radius: CLLocationDistance = 1000

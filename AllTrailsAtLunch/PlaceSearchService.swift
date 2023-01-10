@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 import Combine
+import UIKit
 
 enum PlaceSearchError: Error {
     case urlConstructionError
@@ -16,6 +17,7 @@ enum PlaceSearchError: Error {
     case requestDeniedError
     case unknownError
     case urlSessionError(Error)
+    case imageDecodeError
 }
 
 struct PlaceSearchResponse {
@@ -26,6 +28,9 @@ struct PlaceSearchResponse {
 
 protocol PlaceSearchService {
     func fetchNearbyRestaurants(location: CLLocationCoordinate2D, radius: CLLocationDistance, keyword: String?) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never>
+    
+    func fetchPhoto(maxWidth: CGFloat, reference: String) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never>
+
 }
 
 final class GooglePlaceSearchService: PlaceSearchService {
@@ -92,6 +97,26 @@ final class GooglePlaceSearchService: PlaceSearchService {
             }
             .eraseToAnyPublisher()
     }
+    
+    func fetchPhoto(maxWidth: CGFloat, reference: String) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never> {
+        let endpoint = GooglePlaceAPIEndpoint.photo(maxWidth: maxWidth, reference: reference)
+        guard let url = endpoint.url else {
+            return Just(Result.failure(PlaceSearchError.urlConstructionError)).eraseToAnyPublisher()
+        }
+        // TODO: With more time, I would definitely cache the images, and possibly pre-render for the target size.
+        return dataProvider(url)
+            .map { data -> Result<UIImage, PlaceSearchError> in
+                if let image = UIImage(data: data) {
+                    return .success(image)
+                } else {
+                    return .failure(PlaceSearchError.imageDecodeError)
+                }
+            }
+            .catch { error in
+                Just(.failure(.urlSessionError(error)))
+            }
+            .eraseToAnyPublisher()
+    }
 }
 
 private struct GooglePlaceAPIEndpoint {
@@ -138,5 +163,11 @@ private extension GooglePlaceAPIEndpoint {
             params.append(.init(name: "type", value: type))
         }
         return GooglePlaceAPIEndpoint(action: .nearbySearch, params: params)
+    }
+    
+    static func photo(maxWidth: CGFloat, reference: String) -> GooglePlaceAPIEndpoint {
+        let photoReferenceParam = URLQueryItem(name: "photo_reference", value: reference)
+        let maxWidthParam = URLQueryItem(name: "maxwidth", value: String(Int(maxWidth)))
+        return GooglePlaceAPIEndpoint(action: .photo, params: [photoReferenceParam, maxWidthParam])
     }
 }
