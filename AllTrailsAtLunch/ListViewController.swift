@@ -116,6 +116,13 @@ extension ListViewController: UICollectionViewDelegateFlowLayout {
             contentView.loadImageThumbnail(publisher: imagePublisher)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let detailViewModel = viewModel.detailViewModelAtIndexPath(indexPath) {
+            let detailViewController = PlaceDetailViewController(viewModel: detailViewModel)
+            self.navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
 }
 
 // MARK: - Content View / Configuration

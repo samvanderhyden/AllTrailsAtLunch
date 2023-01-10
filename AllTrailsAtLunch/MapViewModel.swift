@@ -35,6 +35,10 @@ final class MapViewModel {
         guard let photoReference = item.thumbnailPhotoReference else { return nil }
         return searchService.fetchPhoto(maxWidth: width, reference: photoReference)
     }
+    
+    func detailViewModelForItem(_ item: PlaceListItem) -> PlaceDetailViewModel {
+        return PlaceDetailViewModel(place: item.place)
+    }
 }
 
 

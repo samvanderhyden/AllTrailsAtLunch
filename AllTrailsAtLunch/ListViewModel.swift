@@ -71,6 +71,10 @@ final class ListViewModel {
         return searchService.fetchPhoto(maxWidth: width, reference: photoReference)
     }
     
+    func detailViewModelAtIndexPath(_ indexPath: IndexPath) -> PlaceDetailViewModel? {
+        guard let item = self.itemAtIndexPath(indexPath) else { return nil }
+        return PlaceDetailViewModel(place: item.place)
+    }
 }
 
 struct PlaceListItem: Hashable {
@@ -96,13 +100,15 @@ struct PlaceListItem: Hashable {
     var description: String
     var ratingDescription: String
     var thumbnailPhotoReference: String?
-
+    let place: Place
+    
     init?(place: Place) {
         guard let id = place.placeId else {
             Logger.appDefault.info("Skipping place `\(place.name ?? "")` without an id")
             return nil
         }
         self.id = id
+        self.place = place
         
         // TODO: Localize the placeholder text
         self.name = place.name ?? "?"

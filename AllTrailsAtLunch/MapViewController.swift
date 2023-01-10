@@ -75,6 +75,9 @@ extension MapViewController: MKMapViewDelegate {
         let size = detailView.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
         guard let imagePublisher = viewModel.loadPhotoForItem(listItem, width: size.height) else { return }
         detailView.loadImageThumbnail(publisher: imagePublisher)
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapCallout(_:)))
+        detailView.addGestureRecognizer(gestureRecognizer)
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -86,9 +89,18 @@ extension MapViewController: MKMapViewDelegate {
             return nil
         }
     }
-    
+        
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         // TODO: If I had more time, I'd call back to the view model to initiate a new search and add more places as annotations
+    }
+    
+    @objc private func didTapCallout(_ sender: Any) {
+        guard let sender = sender as? UIGestureRecognizer else { return }
+        guard let view = sender.view as? PlaceItemContentView else { return }
+        guard let configuration = view.configuration as? PlaceItemContentConfiguration else { return }
+        let detailViewModel = viewModel.detailViewModelForItem(configuration.item)
+        let detailViewController = PlaceDetailViewController(viewModel: detailViewModel)
+        self.navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 
