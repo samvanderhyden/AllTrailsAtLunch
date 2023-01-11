@@ -12,6 +12,11 @@ import os.log
 
 final class RootViewModel {
     
+    private enum Constants {
+        // Default to 5 mile radius
+        static let defaultRadius: CLLocationDistance = 8046.72
+    }
+    
     enum ViewState {
         case list
         case map
@@ -71,7 +76,6 @@ final class RootViewModel {
     private(set) lazy var searchViewModel = SearchViewModel(searchService: searchService)
     
     private var cancellables = Set<AnyCancellable>()
-    private var radius: CLLocationDistance = 1000
     
     /// Publishes an error when loading data or accessing location
     let errorSubject = PassthroughSubject<DataLoadingError, Never>()
@@ -145,17 +149,19 @@ final class RootViewModel {
     // MARK: -
     
     private func searchForNearbyRestaurants(_ location: CLLocationCoordinate2D) {
-        searchService.fetchNearbyRestaurants(location: location, radius: radius, keyword: nil).sink { [weak self] result in
+        searchService.fetchNearbyRestaurants(location: location, radius: Constants.defaultRadius, keyword: nil).sink { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let response):
-                self?.results.nearbyResults = response.results
+                self.results.nearbyResults = response.results
                 // TODO: Localize
-                self?.searchBarQueryDescription = "Nearby"
+                self.searchBarQueryDescription = "Nearby"
             case .failure(let error):
                 Logger.appDefault.log(level: .error, "Error retrieving search results: \(error)")
-                // TODO: Error handling
+                self.results.nearbyResults = []
+                self.errorSubject.send(.other)
             }
-            self?.isLoading = false
+            self.isLoading = false
         }
         .store(in: &cancellables)
     }

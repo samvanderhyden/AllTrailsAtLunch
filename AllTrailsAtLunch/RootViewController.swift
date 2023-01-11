@@ -96,7 +96,7 @@ final class RootViewController: UIViewController {
         }
         .store(in: &cancellables)
         
-        viewModel.errorSubject.sink { [weak self] error in
+        viewModel.errorSubject.receive(on: DispatchQueue.main).sink { [weak self] error in
             self?.showErrorDialog(error: error)
         }
         .store(in: &cancellables)
