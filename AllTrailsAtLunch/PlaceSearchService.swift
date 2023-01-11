@@ -24,6 +24,12 @@ struct PlaceSearchResponse {
     let results: [Place]
     let attributions: [String]
     let nextPageToken: String?
+    let request: Request
+
+    enum Request {
+        case textSearch(keyword: String)
+        case location(location: CLLocationCoordinate2D, radius: CLLocationDistance)
+    }
 }
 
 protocol PlaceSearchService {
@@ -31,10 +37,11 @@ protocol PlaceSearchService {
     
     func fetchPhoto(maxWidth: CGFloat, reference: String) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never>
 
+    func searchRestaurants(keyword: String) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never>
 }
 
 final class GooglePlaceSearchService: PlaceSearchService {
-        
+    
     private struct GooglePlaceSearchResponse: Decodable {
         
         // An improvement here might be to implement decoding and check for an
@@ -69,19 +76,32 @@ final class GooglePlaceSearchService: PlaceSearchService {
     }
     
     func fetchNearbyRestaurants(location: CLLocationCoordinate2D, radius: CLLocationDistance, keyword: String?) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never> {
-        
         let endpoint = GooglePlaceAPIEndpoint.nearbySearch(location: location, radius: radius, keyword: keyword, type: "restaurant")
         
         guard let url = endpoint.url else {
             return Just(Result.failure(PlaceSearchError.urlConstructionError)).eraseToAnyPublisher()
         }
         
+        return executeApiRequest(url: url, request: .location(location: location, radius: radius))
+    }
+    
+    func searchRestaurants(keyword: String) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never> {
+        let endpoint = GooglePlaceAPIEndpoint.textSearch(keyword: keyword, type: "restaurant")
+        
+        guard let url = endpoint.url else {
+            return Just(Result.failure(PlaceSearchError.urlConstructionError)).eraseToAnyPublisher()
+        }
+        
+        return executeApiRequest(url: url, request: .textSearch(keyword: keyword))
+    }
+    
+    private func executeApiRequest(url: URL, request: PlaceSearchResponse.Request) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never> {
         return dataProvider(url)
             .decode(type: GooglePlaceSearchResponse.self, decoder: AllTrailsAtLunchJSONDecoder())
             .map { response -> Result<PlaceSearchResponse, PlaceSearchError> in
                 switch response.status {
                 case .ok, .zeroResults:
-                        return .success(.init(results: response.results, attributions: response.htmlAttributions, nextPageToken: response.nextPageToken))
+                    return .success(.init(results: response.results, attributions: response.htmlAttributions, nextPageToken: response.nextPageToken, request: request))
                 case .invalidRequest:
                     return .failure(.invalidRequestError)
                 case .overQueryLimit:
@@ -124,6 +144,7 @@ private struct GooglePlaceAPIEndpoint {
     enum Action: String {
         case nearbySearch = "nearbysearch/json"
         case photo = "photo"
+        case textSearch = "textsearch/json"
     }
     
     private static let host = "maps.googleapis.com"
@@ -169,5 +190,13 @@ private extension GooglePlaceAPIEndpoint {
         let photoReferenceParam = URLQueryItem(name: "photo_reference", value: reference)
         let maxWidthParam = URLQueryItem(name: "maxwidth", value: String(Int(maxWidth)))
         return GooglePlaceAPIEndpoint(action: .photo, params: [photoReferenceParam, maxWidthParam])
+    }
+    
+    static func textSearch(keyword: String, type: String?) -> GooglePlaceAPIEndpoint {
+        var params = [URLQueryItem(name: "query", value: keyword)]
+        if let type = type, type != keyword {
+            params.append(.init(name: "type", value: type))
+        }
+        return GooglePlaceAPIEndpoint(action: .textSearch, params: params)
     }
 }

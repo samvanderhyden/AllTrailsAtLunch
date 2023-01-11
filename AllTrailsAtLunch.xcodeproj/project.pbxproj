@@ -28,6 +28,7 @@
 		A8EC03AC296DF32A00B6DB89 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8EC03AB296DF32A00B6DB89 /* MapKit.framework */; };
 		A8EC03AE296E2A3800B6DB89 /* PlaceDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03AD296E2A3800B6DB89 /* PlaceDetailViewModel.swift */; };
 		A8EC03B0296E2A7800B6DB89 /* PlaceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03AF296E2A7800B6DB89 /* PlaceDetailViewController.swift */; };
+		A8EC03B2296F29B800B6DB89 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		A8EC03AB296DF32A00B6DB89 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A8EC03AD296E2A3800B6DB89 /* PlaceDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewModel.swift; sourceTree = "<group>"; };
 		A8EC03AF296E2A7800B6DB89 /* PlaceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewController.swift; sourceTree = "<group>"; };
+		A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				A8EC039E2968ECEF00B6DB89 /* ListViewModel.swift */,
 				A8EC03A02968ED2000B6DB89 /* MapViewModel.swift */,
 				A8EC03AD296E2A3800B6DB89 /* PlaceDetailViewModel.swift */,
+				A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */,
 				A8EC039C2968C35800B6DB89 /* LocationService.swift */,
 				A89B381029664593003D240C /* Assets.xcassets */,
 				A89B381229664593003D240C /* LaunchScreen.storyboard */,
@@ -255,6 +258,7 @@
 				A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */,
 				A8EC03AE296E2A3800B6DB89 /* PlaceDetailViewModel.swift in Sources */,
 				A8EC039B2968BD3500B6DB89 /* RootViewModel.swift in Sources */,
+				A8EC03B2296F29B800B6DB89 /* SearchViewModel.swift in Sources */,
 				A8EC039D2968C35800B6DB89 /* LocationService.swift in Sources */,
 				A89B380C29664591003D240C /* RootViewController.swift in Sources */,
 				A89B380829664591003D240C /* AppDelegate.swift in Sources */,

@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 import os.log
 
+protocol ListViewControllerDelegate: AnyObject {
+    func listViewDidScroll()
+}
+
 private enum Section {
     case places
 }
@@ -18,6 +22,8 @@ private typealias DataSource = UICollectionViewDiffableDataSource<Section, Place
 private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, PlaceListItem>
 
 final class ListViewController: UIViewController {
+    
+    weak var delegate: ListViewControllerDelegate?
     
     private let collectionViewLayout = UICollectionViewFlowLayout()
     private lazy var collectionView: UICollectionView = {
@@ -121,6 +127,13 @@ extension ListViewController: UICollectionViewDelegateFlowLayout {
         if let detailViewModel = viewModel.detailViewModelAtIndexPath(indexPath) {
             let detailViewController = PlaceDetailViewController(viewModel: detailViewModel)
             self.navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.isTracking {
+            // Notify if the user scrolled the scroll view
+            delegate?.listViewDidScroll()
         }
     }
 }

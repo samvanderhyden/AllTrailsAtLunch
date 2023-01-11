@@ -20,6 +20,7 @@ final class RootViewController: UIViewController {
         listViewController.view.frame = view.bounds
         view.addSubview(listViewController.view)
         listViewController.didMove(toParent: self)
+        listViewController.delegate = self
         return listViewController
     }()
     
@@ -50,6 +51,9 @@ final class RootViewController: UIViewController {
         return button
     }()
     
+    private lazy var searchController = UISearchController(searchResultsController: nil)
+    private var keyboardHeight: CGFloat = 0
+    
     init(viewModel: RootViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -66,7 +70,14 @@ final class RootViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "backgroundColor")
         viewModel.didLoad()
+        // TODO: localize
         self.navigationItem.title = "AllTrails at Lunch"
+        self.navigationItem.searchController = searchController
+        styleNavigationBar()
+        searchController.searchResultsUpdater = viewModel.searchViewModel
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
+        setupKeyboardBinding()
         
         viewModel.$viewState.sink { [weak self] state in
             guard let self = self else { return }
@@ -87,6 +98,17 @@ final class RootViewController: UIViewController {
         
         viewModel.errorSubject.sink { [weak self] error in
             self?.showErrorDialog(error: error)
+        }
+        .store(in: &cancellables)
+        
+        viewModel.$searchBarQueryDescription.receive(on: DispatchQueue.main).sink { text in
+            self.searchController.searchBar.text = nil
+            self.searchController.searchBar.placeholder = text
+        }
+        .store(in: &cancellables)
+        
+        viewModel.$showViewModeButton.sink { [weak self] show in
+            self?.viewModeButton.isHidden = !show
         }
         .store(in: &cancellables)
     }
@@ -128,7 +150,7 @@ final class RootViewController: UIViewController {
     
     private func updateSafeAreaInsets() {
         var additionalInsets = additionalSafeAreaInsets
-        additionalInsets.bottom = viewModeButton.frame.height + 8
+        additionalInsets.bottom = keyboardHeight + viewModeButton.frame.height + 8
         self.additionalSafeAreaInsets = additionalInsets
     }
     
@@ -146,4 +168,72 @@ final class RootViewController: UIViewController {
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in }))
         self.present(alert, animated: true, completion: nil)
     }
+    
+    private func styleNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+
+        // Customizing our navigation bar
+        navigationController?.navigationBar.tintColor = .black
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+    }
+    
+    private func setupKeyboardBinding() {
+        NotificationCenter.default
+            .publisher(for: UIApplication.keyboardWillShowNotification)
+            .sink(receiveValue: { [weak self] notification in
+                self?.handleKeyboardUpdate(with: notification)
+            })
+            .store(in: &cancellables)
+        
+        
+        NotificationCenter.default
+            .publisher(for: UIApplication.keyboardWillHideNotification)
+            .sink(receiveValue: { [weak self] notification in
+                self?.handleKeyboardUpdate(with: notification)
+            })
+            .store(in: &cancellables)
+    }
+    
+    private func handleKeyboardUpdate(with notification: Notification) {
+        guard let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+            return
+        }
+        
+        let keyboardFrame = self.view.convert(frame, from: nil)
+        keyboardHeight = max(0, view.frame.maxY - view.safeAreaInsets.bottom - keyboardFrame.minY)
+        updateSafeAreaInsets()
+    }
+}
+
+// MARK: -
+
+extension RootViewController: UISearchControllerDelegate {
+    func didPresentSearchController(_ searchController: UISearchController) {
+        viewModel.updateSearchBarActive(true)
+    }
+    
+    func didDismissSearchController(_ searchController: UISearchController) {
+        viewModel.updateSearchBarActive(false)
+    }
+}
+
+extension RootViewController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.didCancelSearch()
+    }
+}
+
+// MARK: -
+
+extension RootViewController: ListViewControllerDelegate {
+    
+    func listViewDidScroll() {
+        searchController.dismiss(animated: true)
+        viewModel.updateSearchBarActive(false)
+    }
+    
 }

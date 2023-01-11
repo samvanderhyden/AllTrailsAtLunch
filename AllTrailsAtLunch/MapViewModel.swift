@@ -14,7 +14,7 @@ final class MapViewModel {
     func updateResults(_ places: [Place]) {
         let mapItems = places.compactMap(PlaceMapItem.init)
         results = mapItems
-        if !hasFitMapFrame {
+        if !hasFitMapFrame, !mapItems.isEmpty {
             let rect = MKMapRect(coordinates: mapItems.map { $0.coordinate })
             mapFrameSubject.send(rect)
             hasFitMapFrame = true

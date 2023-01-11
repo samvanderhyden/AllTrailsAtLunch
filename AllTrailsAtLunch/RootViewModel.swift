@@ -22,6 +22,11 @@ final class RootViewModel {
         case other
     }
     
+    struct PlaceResults {
+        var searchResults: [Place]
+        var nearbyResults: [Place]
+    }
+    
     private let searchService: PlaceSearchService
     private let locationService: LocationService
     
@@ -30,21 +35,40 @@ final class RootViewModel {
         self.locationService = locationService
     }
     
-    @Published private(set) var results: [Place] = [] {
+    @Published private(set) var results: PlaceResults = .init(searchResults: [], nearbyResults: []) {
         didSet {
-            mapViewModel.updateResults(results)
-            listViewModel.updateResults(results)
+            mapViewModel.updateResults(results.nearbyResults)
+            // Show search results in the list if we have them, but default to nearby if not
+            let listResults = !results.searchResults.isEmpty || searchViewModel.isSearchBarActive ? results.searchResults : results.nearbyResults
+            listViewModel.updateResults(listResults)
         }
     }
+    
     @Published var isLoading: Bool = false {
         didSet {
             listViewModel.updateIsLoading(isLoading)
         }
     }
-    @Published var viewState: ViewState = .list
+    
+    @Published var viewState: ViewState = .list {
+        didSet {
+            if viewState == .map {
+                // I made the decision to simplify here and not show search results on on the map
+                // So when switching to map view, we will clear out the search results
+                results.searchResults = []
+                // TODO: Localize this
+                searchBarQueryDescription = "Nearby"
+            }
+        }
+    }
+    
+    @Published private(set) var searchBarQueryDescription: String?
+    
+    @Published private(set) var showViewModeButton: Bool = true
     
     private(set) lazy var mapViewModel = MapViewModel(searchService: searchService)
     private(set) lazy var listViewModel = ListViewModel(searchService: searchService)
+    private(set) lazy var searchViewModel = SearchViewModel(searchService: searchService)
     
     private var cancellables = Set<AnyCancellable>()
     private var radius: CLLocationDistance = 1000
@@ -65,21 +89,28 @@ final class RootViewModel {
             case .notAuthorized:
                 // TODO: If I had more time I'd add a screen calling out to authorize location access in settings.
                 Logger.appDefault.log(level: .info, "Error getting location: User has not authorized location services")
-                self.results = []
+                self.results.nearbyResults = []
                 self.isLoading = false
                 self.errorSubject.send(.locationNotAuthorized)
             case .failed(let error):
                 Logger.appDefault.log(level: .error, "Error getting location: \(error)")
-                self.results = []
+                self.results.nearbyResults = []
                 self.isLoading = false
                 self.errorSubject.send(.other)
             }
         }
         .store(in: &cancellables)
+        
+        
+        searchViewModel.$results.sink { [weak self] results in
+            guard let self = self else { return }
+            self.results.searchResults = results
+        }
+        .store(in: &cancellables)
     }
     
     func willAppear() {
-        if results.isEmpty {
+        if results.nearbyResults.isEmpty {
             locationService.fetchCurrentLocation()
         }
     }
@@ -94,6 +125,22 @@ final class RootViewModel {
             viewState = .map
         }
     }
+    
+    func updateSearchBarActive(_ isActive: Bool) {
+        searchViewModel.updateSearchBarActive(isActive)
+        // Switch to list view when search bar is active
+        if isActive {
+            viewState = .list
+        }
+        
+        // Show the view mode button when the search bar is not active
+        showViewModeButton = !isActive
+    }
+    
+    func didCancelSearch() {
+        updateSearchBarActive(false)
+        results.searchResults = []
+    }
         
     // MARK: -
     
@@ -101,7 +148,9 @@ final class RootViewModel {
         searchService.fetchNearbyRestaurants(location: location, radius: radius, keyword: nil).sink { [weak self] result in
             switch result {
             case .success(let response):
-                self?.results = response.results
+                self?.results.nearbyResults = response.results
+                // TODO: Localize
+                self?.searchBarQueryDescription = "Nearby"
             case .failure(let error):
                 Logger.appDefault.log(level: .error, "Error retrieving search results: \(error)")
                 // TODO: Error handling

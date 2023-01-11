@@ -32,12 +32,16 @@ class RootViewModelTests: XCTestCase {
     private final class MockPlaceSearchService: PlaceSearchService {
         func fetchNearbyRestaurants(location: CLLocationCoordinate2D, radius: CLLocationDistance, keyword: String?) -> AnyPublisher<Result<AllTrailsAtLunch.PlaceSearchResponse, AllTrailsAtLunch.PlaceSearchError>, Never> {
             let place = Place(name:"Test", geometry: .init(location: .init(lat: 0, lng: 0), viewport: .init(northeast: .init(lat: 0, lng: 0), southwest: .init(lat: 0, lng: 0))))
-            let response = PlaceSearchResponse(results: [place], attributions: [], nextPageToken: nil)
+            let response = PlaceSearchResponse(results: [place], attributions: [], nextPageToken: nil, request: .location(location: location, radius: radius))
             return Just(.success(response)).eraseToAnyPublisher()
         }
         
         func fetchPhoto(maxWidth: CGFloat, reference: String) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never> {
             return Just(.failure(PlaceSearchError.imageDecodeError)).eraseToAnyPublisher()
+        }
+        
+        func searchRestaurants(keyword: String) -> AnyPublisher<Result<PlaceSearchResponse, PlaceSearchError>, Never> {
+            return Just(.failure(PlaceSearchError.unknownError)).eraseToAnyPublisher()
         }
     }
     
@@ -47,7 +51,7 @@ class RootViewModelTests: XCTestCase {
         viewModel.didLoad()
         let expectation = self.expectation(description: "Results populated")
         viewModel.$results.sink { results in
-            XCTAssertTrue(results.count > 0, "Results were returned")
+            XCTAssertTrue(results.nearbyResults.count > 0, "Results were returned")
             expectation.fulfill()
         }
         .store(in: &cancellables)

@@ -42,7 +42,7 @@ final class MapViewController: UIViewController {
         mapView.showsUserLocation = true
         
         var previousItems: [PlaceMapItem]?
-        viewModel.$results.receive(on: DispatchQueue.main).sink { [weak self] items in
+        viewModel.$results.removeDuplicates().receive(on: DispatchQueue.main).sink { [weak self] items in
             guard let self = self else { return }
             if let previousItems = previousItems {
                 self.mapView.removeAnnotations(previousItems)
