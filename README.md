@@ -27,7 +27,6 @@ There is a ton left to do to make this a complete app. Some things I've skipped 
 - More Tests: I've demonstrated how I would test the view models by including a few tests for `RootViewModel`, but I would add tests for all view models in a production app, hopefully exercising most input conditions and covering most outputs.
 
 Additionally, a production app would need the following:
-- Image caching (pass an image cache into the view model), so we aren't re-requesting from the network all the time.
 - Dark mode support
 - Localization (I've make a note of this in most places where it's needed)
 - Accessibility support. I've included support for dynamic type in the list view, but we'd want to add voice over support as well.

@@ -29,6 +29,7 @@
 		A8EC03AE296E2A3800B6DB89 /* PlaceDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03AD296E2A3800B6DB89 /* PlaceDetailViewModel.swift */; };
 		A8EC03B0296E2A7800B6DB89 /* PlaceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03AF296E2A7800B6DB89 /* PlaceDetailViewController.swift */; };
 		A8EC03B2296F29B800B6DB89 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */; };
+		A8EC03B9296F730F00B6DB89 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EC03B8296F730F00B6DB89 /* ImageCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		A8EC03AF296E2A7800B6DB89 /* PlaceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewController.swift; sourceTree = "<group>"; };
 		A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		A8EC03B7296F675F00B6DB89 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A8EC03B8296F730F00B6DB89 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				A8EC03AD296E2A3800B6DB89 /* PlaceDetailViewModel.swift */,
 				A8EC03B1296F29B800B6DB89 /* SearchViewModel.swift */,
 				A8EC039C2968C35800B6DB89 /* LocationService.swift */,
+				A8EC03B8296F730F00B6DB89 /* ImageCache.swift */,
 				A89B381029664593003D240C /* Assets.xcassets */,
 				A89B381229664593003D240C /* LaunchScreen.storyboard */,
 				A89B381529664593003D240C /* Info.plist */,
@@ -256,6 +259,7 @@
 			files = (
 				A8EC03A5296C8B3300B6DB89 /* MapViewController.swift in Sources */,
 				A8EC0392296769DF00B6DB89 /* PlaceSearchService.swift in Sources */,
+				A8EC03B9296F730F00B6DB89 /* ImageCache.swift in Sources */,
 				A8EC03A7296C8BC100B6DB89 /* ListViewController.swift in Sources */,
 				A8EC03A12968ED2000B6DB89 /* MapViewModel.swift in Sources */,
 				A8EC03AE296E2A3800B6DB89 /* PlaceDetailViewModel.swift in Sources */,

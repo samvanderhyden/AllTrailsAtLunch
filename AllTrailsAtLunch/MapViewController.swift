@@ -73,7 +73,7 @@ extension MapViewController: MKMapViewDelegate {
         guard let annotationView = mapView.view(for: annotation) as? PlaceAnnotationView else { return }
         guard let detailView = annotationView.detailCalloutAccessoryView as? PlaceItemContentView else { return }
         let size = detailView.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
-        guard let imagePublisher = viewModel.loadPhotoForItem(listItem, width: size.height) else { return }
+        guard let imagePublisher = viewModel.loadPhotoForItem(listItem, width: size.height * UIScreen.main.scale) else { return }
         detailView.loadImageThumbnail(publisher: imagePublisher)
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapCallout(_:)))

@@ -71,10 +71,12 @@ final class RootViewModel {
     
     @Published private(set) var showViewModeButton: Bool = true
     
-    private(set) lazy var mapViewModel = MapViewModel(searchService: searchService)
-    private(set) lazy var listViewModel = ListViewModel(searchService: searchService)
+    private(set) lazy var mapViewModel = MapViewModel(searchService: searchService, imageCache: imageCache)
+    private(set) lazy var listViewModel = ListViewModel(searchService: searchService, imageCache: imageCache)
     private(set) lazy var searchViewModel = SearchViewModel(searchService: searchService)
     
+    private lazy var imageCache = ImageCache<PhotoReferenceKey>(maxImages: 50)
+
     private var cancellables = Set<AnyCancellable>()
     
     /// Publishes an error when loading data or accessing location
@@ -83,7 +85,7 @@ final class RootViewModel {
     // MARK: - Lifecycle
     
     func didLoad() {
-        locationService.locationStatus.sink { [weak self] status in
+        locationService.locationStatus.removeDuplicates().sink { [weak self] status in
             guard let self = self else { return }
             switch status {
             case .authorizing, .loading, .initial:

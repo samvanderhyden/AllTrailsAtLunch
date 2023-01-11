@@ -26,14 +26,31 @@ final class MapViewModel {
     
     private var hasFitMapFrame = false
     private let searchService: PlaceSearchService
-    
-    init(searchService: PlaceSearchService) {
+    private let imageCache: ImageCache<PhotoReferenceKey>
+
+    init(searchService: PlaceSearchService, imageCache: ImageCache<PhotoReferenceKey>) {
         self.searchService = searchService
+        self.imageCache = imageCache
     }
 
     func loadPhotoForItem(_ item: PlaceListItem, width: CGFloat) -> AnyPublisher<Result<UIImage, PlaceSearchError>, Never>? {
         guard let photoReference = item.thumbnailPhotoReference else { return nil }
-        return searchService.fetchPhoto(maxWidth: width, reference: photoReference)
+        let key = PhotoReferenceKey(photoReference: photoReference, width: width)
+        return imageCache.imageForKey(key).flatMap({ [searchService, imageCache] image in
+            if let image = image {
+                return Just(Result<UIImage, PlaceSearchError>.success(image)).eraseToAnyPublisher()
+            } else {
+                return searchService.fetchPhoto(maxWidth: width, reference: photoReference)
+                    .handleEvents(receiveOutput: { result in
+                        switch result {
+                        case .success(let image):
+                            imageCache.insertImage(image: image, forKey: key)
+                        case .failure:
+                            break
+                        }
+                    }).eraseToAnyPublisher()
+            }
+        }).eraseToAnyPublisher()
     }
     
     func detailViewModelForItem(_ item: PlaceListItem) -> PlaceDetailViewModel {
